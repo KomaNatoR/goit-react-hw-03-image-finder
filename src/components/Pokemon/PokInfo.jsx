@@ -11,7 +11,7 @@ export default class PokInfo extends Component {
         error: null,
         status: 'idle',
     };
-
+    
     componentDidUpdate(pProps, pState) {
         const prevName = pProps.pokemonName;
         const nextName = this.props.pokemonName;
