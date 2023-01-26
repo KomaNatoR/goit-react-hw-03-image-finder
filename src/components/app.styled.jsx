@@ -5,4 +5,11 @@ export const AppDiv = styled.div`
     grid-template-columns: 1fr;
     grid-gap: 16px;
     padding-bottom: 24px;
+
+    text-align:center;
+    justify-content: center;
+    
+    div:first-of-type {
+        justify-content: center;
+    }
 `;
