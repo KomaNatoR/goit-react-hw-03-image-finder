@@ -1,4 +1,4 @@
-
+import PropTypes from 'prop-types';
 
 export default function ImageGalleryItem({imgData,takeImgId}) {
     return (
@@ -8,4 +8,15 @@ export default function ImageGalleryItem({imgData,takeImgId}) {
             </li>
         ))
     );
-}
+};
+ImageGalleryItem.propTypes = {
+    renderData: PropTypes.arrayOf(PropTypes.shape({
+        id: PropTypes.number.isRequired,
+        webformatURL: PropTypes.string.isRequired,
+        tags:PropTypes.string.isRequired,
+    }),),
+    takeImgId: PropTypes.func.isRequired,
+};
+ImageGalleryItem.defaultProps = {
+    imgData:[]
+};

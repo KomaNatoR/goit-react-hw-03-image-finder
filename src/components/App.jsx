@@ -1,47 +1,17 @@
-// import { Component } from "react";
-// import { ToastContainer } from "react-toastify";
-// import 'react-toastify/dist/ReactToastify.css';
-
-// import PokForm from "./Pokemon/PokForm";
-// import PokInfo from "./Pokemon/PokInfo";
-
-
-// export class App extends Component {
-//   state = {
-//     pokemonName: '',
-    
-//   };
-
-//   hendleFormSubmit = (pokName) => {
-//     this.setState({ pokemonName: pokName });
-//   }
-
-//   render() {
-//     const { hendleFormSubmit } = this;
-//     const { pokemonName } = this.state;
-
-//     return (
-//       <div>
-//         <PokForm onSubmit={hendleFormSubmit} />
-//         <PokInfo pokemonName={pokemonName} />
-//         <ToastContainer autoClose={3000} />
-//       </div>
-//     );
-//   }
-// };
-
 import { Component } from "react";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
 
 import { AppDiv } from "./app.styled";
 import Searchbar from "./Searchbar/Searchbar";
-import Loader from "./Loader/Loader";
 import ImageGallery from "./ImageGallery/ImageGallery";
+import Loader from "./Loader/Loader";
+import Button from "./Button/Button";
 import Modal from "./Modal/Modal";
 
 export class App extends Component {
   state = {
+    page:1,
     pictName: '',
     imgData: [],
     modalPict: null,
@@ -51,32 +21,43 @@ export class App extends Component {
   componentDidMount() { }
   
   componentDidUpdate(pProps, pState) {
-    const { succesFeych } = this;
-    const { pictName } = this.state;
+    const { succesFetch } = this;
+    const { page, pictName, } = this.state;
     const KEY = '31888671-f215a97b976f323f834fb73b1';
 
-    if (pState.pictName !== pictName) {
-      this.setState({ screen: 'pending', imgData: [], });
+    if (pState.pictName !== pictName||pState.page!==page) {
+      this.setState({ screen: 'pending', });
 
-      fetch(`https://pixabay.com/api/?q=${pictName}&page=1&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`)
+      fetch(`https://pixabay.com/api/?q=${pictName}&page=${page}&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`)
         .then(resp => resp.json())
-        .then(succesFeych)
-        // .then(({ hits }) => this.setState({ imgData: hits, loading: false, }))
+        .then(succesFetch)
+        // .then(({ hits }) => this.setState({ imgData: hits, screen: 'succes', }))
         .catch(Error => this.setState({ screen: 'error', }));
     }
   };
 
   // -------------------------------------------------|   ОБРОБКА ФЕТЧА
-  succesFeych = ({ hits }) => {
+  succesFetch = ({ hits }) => {
+
     if (hits.length<1) {
-    return this.setState({ screen: 'error', });
+      return this.setState({ screen: 'error', });
     };
-    return this.setState({ imgData: hits,screen: 'succes', });
+
+    return this.setState(({ imgData }) => {
+      console.log(imgData);
+      return ({
+      imgData: [...imgData, ...hits],
+      screen: 'succes',
+    })});
   }
 
   // -------------------------------------------------|   КАСТОМНІ МЕТОДИ
   hendleFormSubmit = (name) => {
-    this.setState({pictName:name});
+    this.setState({
+      page:1,
+      pictName: name,
+      imgData: [],
+    });
   };
   takeImgId = (id) => {
     const { imgData } = this.state;
@@ -85,13 +66,17 @@ export class App extends Component {
     
     this.setState(({modalPict})=>({modalPict:findImg,}));
   };
+  loadMore = () => {
+    this.setState(({ page }) => ({ page: page + 1, }));
+  };
   toggleModal = () => {
     this.setState(({modalPict})=>({modalPict:null,}));
   };
 
   render() {
-    const { hendleFormSubmit, toggleModal, takeImgId } = this;
+    const { hendleFormSubmit, toggleModal, takeImgId, loadMore } = this;
     const { imgData, modalPict, screen } = this.state;
+    const plug = screen === 'idle' || screen === 'pending' || screen === 'error';
     // console.log(screen);
 
     return (
@@ -100,11 +85,14 @@ export class App extends Component {
         <ImageGallery imgData={imgData} takeImgId={takeImgId} />
         <Loader screenText={screen} />
 
+        {screen === 'succes' && <Button loadMore={loadMore} />}
         {modalPict && <Modal toggleModal={toggleModal} modalPict={modalPict} />}
+
+        {plug&&<div style={{ height:"calc(100vh - 275px)"}}></div>}
+        <footer></footer>
         
         <ToastContainer autoClose={2000} />
       </AppDiv>
-      
     );
   }
 };

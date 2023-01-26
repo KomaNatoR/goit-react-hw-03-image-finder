@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { createPortal } from "react-dom";
+import PropTypes from 'prop-types';
 
 import { Div } from "./modal.styled";
 
@@ -38,4 +39,7 @@ export default class Modal extends Component {
         );
     }
 };
-
+Modal.propTypes = {
+    toggleModal: PropTypes.func.isRequired,
+    modalPict:PropTypes.object.isRequired,
+};

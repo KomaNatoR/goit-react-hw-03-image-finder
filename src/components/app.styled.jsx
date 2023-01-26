@@ -7,9 +7,13 @@ export const AppDiv = styled.div`
     padding-bottom: 24px;
 
     text-align:center;
-    justify-content: center;
     
     div:first-of-type {
         justify-content: center;
+    }
+
+    footer {
+        height: 72px;
+        background-color: darkolivegreen;
     }
 `;

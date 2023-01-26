@@ -1,4 +1,5 @@
 import { Watch } from 'react-loader-spinner';
+import PropTypes from 'prop-types';
 
 export default function Loader({ screenText }) {
     // console.log(screenText);
@@ -18,4 +19,7 @@ export default function Loader({ screenText }) {
             visible={true}
         />
     };
+};
+Loader.propTypes = {
+    screenText:PropTypes.string.isRequired,
 };
