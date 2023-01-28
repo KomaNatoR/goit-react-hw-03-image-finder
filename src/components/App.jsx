@@ -1,6 +1,7 @@
 import { Component } from "react";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
+import { toast } from "react-toastify";
 
 import { AppDiv } from "./app.styled";
 import Searchbar from "./Searchbar/Searchbar";
@@ -15,17 +16,19 @@ export class App extends Component {
     pictName: '',
     imgData: [],
     modalPict: null,
-    screen:'idle',
+    screen: 'idle',
+    // imgTotal: null,
   };
   // -------------------------------------------------|   МЕТОДИ ЦИКЛУ
   componentDidMount() { }
   
   componentDidUpdate(pProps, pState) {
     const { succesFetch } = this;
-    const { page, pictName, } = this.state;
+    const { page, pictName } = this.state;
     const KEY = '31888671-f215a97b976f323f834fb73b1';
 
-    if (pState.pictName !== pictName||pState.page!==page) {
+    //  || pState.imgTotal === imgTotal
+    if (pState.pictName !== pictName || pState.page !== page) {
       this.setState({ screen: 'pending', });
 
       fetch(`https://pixabay.com/api/?q=${pictName}&page=${page}&key=${KEY}&image_type=photo&orientation=horizontal&per_page=12`)
@@ -34,25 +37,31 @@ export class App extends Component {
         // .then(({ hits }) => this.setState({ imgData: hits, screen: 'succes', }))
         .catch(Error => this.setState({ screen: 'error', }));
     }
+    return;
   };
 
   // -------------------------------------------------|   ОБРОБКА ФЕТЧА
-  succesFetch = ({ hits }) => {
+  succesFetch = (resp) => {
+    const { hits, total } = resp;
+    // console.log(resp);
 
     if (hits.length<1) {
       return this.setState({ screen: 'error', });
     };
 
     return this.setState(({ imgData }) => {
-      console.log(imgData);
+      // console.log(imgData);
       return ({
       imgData: [...imgData, ...hits],
       screen: 'succes',
+      imgTotal: total,
     })});
   }
 
   // -------------------------------------------------|   КАСТОМНІ МЕТОДИ
   hendleFormSubmit = (name) => {
+    if (name === this.state.pictName) return toast.success('Тут поправив ;)');;
+
     this.setState({
       page:1,
       pictName: name,

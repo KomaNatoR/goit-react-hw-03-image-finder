@@ -20,7 +20,7 @@ export default class Searchbar extends Component {
 
         if (value.trim() === '') return toast.error('input name, pleace!');
         this.props.onSubmit(value);
-        this.setState({ value: '' });
+        // this.setState({ value: '' });
     };
 
     render() {

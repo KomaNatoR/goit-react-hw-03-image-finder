@@ -7,12 +7,13 @@ import { Ul } from "./imageGallery.styled";
 export default function ImageGallery({imgData,takeImgId}) {
     return (
         <Ul>
-            <ImageGalleryItem imgData={imgData} takeImgId={takeImgId} />
+            {/* <ImageGalleryItem/> */}
+            {imgData.map(imgObj => <ImageGalleryItem key={imgObj.id} imgObj={imgObj} takeImgId={takeImgId} />)}
         </Ul>
     );
 };
 ImageGallery.propTypes = {
-    renderData: PropTypes.arrayOf(PropTypes.shape({
+    imgData: PropTypes.arrayOf(PropTypes.shape({
         id: PropTypes.number.isRequired,
         webformatURL: PropTypes.string.isRequired,
         tags:PropTypes.string.isRequired,
@@ -20,5 +21,5 @@ ImageGallery.propTypes = {
     takeImgId: PropTypes.func.isRequired,
 };
 ImageGallery.defaultProps = {
-    imgData:[]
+    imgData:[],
 };
